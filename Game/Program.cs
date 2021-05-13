@@ -16,6 +16,9 @@ namespace Game
             Game();
         }
 
+        /// <summary>
+        /// 游戏具体流程
+        /// </summary>
         private static void Game()
         {
             Console.WriteLine("开始游戏");
@@ -23,7 +26,7 @@ namespace Game
             int count = GetCount(lines);
 
             int step = 1;
-            bool gameStop = false;
+            bool gameStop = false; // 游戏结束标志
             while (!gameStop)
             {
                 int user = step % 2 == 1 ? 1 : 2;
@@ -32,6 +35,7 @@ namespace Game
 
                 while (true)
                 {
+                    // 读取行数并校验
                     string line = Console.ReadLine();
                     var lineAttr = line.Split(',');
                     if (lineAttr.Length != 2)
@@ -59,6 +63,7 @@ namespace Game
                         }
                         else
                         {
+                            // 读取挑选数量并校验
                             var curCount = 0;
                             try
                             {
@@ -80,13 +85,14 @@ namespace Game
                                 lines[curLine - 1] -= curCount;
                             }
 
+                            // 当前用户挑选之后，统计剩余牙签分布
                             count = GetCount(lines);
-                            if (count == 0 || (count == 2 && lines.FindAll(p => p == 0).Count == 1))
+                            if (count == 0 || (count == 2 && lines.FindAll(p => p == 0).Count == 1)) // 直接挑完或剩下两根并分布在两组中，当前用户输了
                             {
                                 Console.WriteLine($"user{user}输了");
                                 gameStop = true;
                             }
-                            else if (count == 1)
+                            else if (count == 1 || (count == 3 && lines.FindAll(p => p == 0).Count == 0)) // 剩下一根或剩下三根并分布在三组中，另一位用户输了
                             {
                                 Console.WriteLine($"user{2 / user}输了");
                                 gameStop = true;
@@ -119,6 +125,11 @@ namespace Game
             }
         }
 
+        /// <summary>
+        /// 获取剩余总牙签
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <returns></returns>
         private static int GetCount(List<int> lines)
         {
             int count = 0;
@@ -130,6 +141,11 @@ namespace Game
             return count;
         }
 
+        /// <summary>
+        /// 获取牙签分布状态
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <returns></returns>
         private static string GetStatus(List<int> lines)
         {
             var statusList = new List<string>();
